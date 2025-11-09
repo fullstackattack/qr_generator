@@ -10,5 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping the website
-        run: curl -s https://yourwebsite.com > /dev/null 2>&1
+        run: curl -s https://qr-generator-y5p9.onrender.com > /dev/null 2>&1
         
