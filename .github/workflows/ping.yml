@@ -1,0 +1,14 @@
+name: Ping Website
+
+on:
+  schedule:
+    - cron: "*/14 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the website
+        run: curl -s https://yourwebsite.com > /dev/null 2>&1
+        
