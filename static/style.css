@@ -1,0 +1,106 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #e8e2f4; /* soft purple Highline tone */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 40px;
+  color: #222;
+}
+
+.container {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border-top: 8px solid #6a4bbf;
+
+  /* 👇 these are the key fixes */
+  height: auto;              /* allows container to grow naturally */
+  min-height: fit-content;   /* ensures it expands to fit form + QR */
+  overflow: visible;         /* ensures nothing is hidden */
+  margin-bottom: 80px;       /* gives scroll space before footer */
+}
+
+h1 {
+  color: #4a2f8f;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.qr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.form-group {
+  width: 100%;
+  text-align: left;
+}
+
+input[type="text"],
+input[type="color"],
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.color-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-preview {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.1);
+}
+
+button {
+  background-color: #6a4bbf;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: #5537a1;
+}
+
+.qr-result {
+  margin-top: 25px;
+}
+
+.qr-result img {
+  width: 250px;
+  height: 250px;
+  border-radius: 12px;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  background-color: #e8e2f4;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  color: #4a2f8f;
+}

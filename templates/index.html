@@ -2,18 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>QR Code Generator</title>
+  <title>Highline QR Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>QR Code Generator</h1>
-  <form method="POST">
-    <input type="text" name="data" placeholder="Enter text or URL" required>
-    <button type="submit">Generate QR</button>
-  </form>
+  <div class="container">
+    <h1>HHS QR Generator</h1>
 
-  {% if qr_filename %}
-  <h2>Your QR Code:</h2>
-  <img src="{{ url_for('static', filename='qr_codes/' + qr_filename) }}" alt="QR Code">
-  {% endif %}
+    <form method="POST" class="qr-form" oninput="updateColorPreview()">
+      <div class="form-group">
+        <label for="data">Text or URL:</label>
+        <input type="text" id="data" name="data" required>
+      </div>
+
+      <div class="form-group">
+        <label for="fill_color">Foreground Color:</label>
+        <div class="color-input">
+          <input type="color" id="fill_color" name="fill_color" value="#000000">
+          <div id="fill_preview" class="color-preview"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="back_color">Background Color:</label>
+        <div class="color-input">
+          <input type="color" id="back_color" name="back_color" value="#ffffff">
+          <div id="back_preview" class="color-preview"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="size">Size:</label>
+        <select id="size" name="size">
+          <option value="6">Small</option>
+          <option value="10" selected>Medium</option>
+          <option value="15">Large</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="error">Error Correction:</label>
+        <p>QR Codes have error correction capability to restore data if the code is dirty or damaged. Choose low for a code that will remain clean/undamaged. Choose High/Max for a code that is likely to get dirty/damaged. Standard is recommended.</p>
+        <select id="error" name="error">
+          <option value="L">Low – Clean</option>
+          <option value="M" selected>Medium – Standard</option>
+          <option value="Q">High – Logo-safe</option>
+          <option value="H">Max – Durable</option>
+        </select>
+      </div>
+
+      <button type="submit">Generate QR Code</button>
+    </form>
+
+    {% if img_data %}
+    <div class="qr-result">
+      <h3>Your QR Code:</h3>
+      <img src="data:image/png;base64,{{ img_data }}" alt="Generated QR Code">
+    </div>
+    {% endif %}
+  </div>
+
+   <footer>
+    <p>
+        Developed by <strong>Amanda Stanley</strong> — 
+        <a href="mailto:amanda.stanley@highlineschools.org">amanda.stanley@highlineschools.org</a>
+    </p>
+    </footer>
+    
+  <script>
+  function updateColorPreview() {
+    const fill = document.getElementById('fill_color').value;
+    const back = document.getElementById('back_color').value;
+    document.getElementById('fill_preview').style.backgroundColor = fill;
+    document.getElementById('back_preview').style.backgroundColor = back;
+  }
+
+  window.addEventListener('DOMContentLoaded', updateColorPreview);
+  </script>
 </body>
 </html>

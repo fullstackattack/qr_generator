@@ -1,44 +1,52 @@
 from flask import Flask, render_template, request
 import qrcode
-import os
-from datetime import datetime
+import io
+import base64
 
-# Initialize Flask app
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
-# Folder to save QR code images
-QR_FOLDER = "static/qr_codes"
-os.makedirs(QR_FOLDER, exist_ok=True)
+@app.after_request
+def add_header(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
-@app.route("/", methods=["GET", "POST"])
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    qr_filename = None  # This will store the filename for the generated QR
+    img_data = None  # placeholder for QR code
 
-    if request.method == "POST":
-        data = request.form.get("data")  # Get text or URL from form
-        if data:
-            # 1️⃣ Create QR object
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_H,
-                box_size=10,
-                border=4
-            )
+    if request.method == 'POST':
+        data = request.form.get('data')
+        fill_color = request.form.get('fill_color', 'black')
+        back_color = request.form.get('back_color', 'white')
+        box_size = int(request.form.get('size', 10))
+        error_level = request.form.get('error', 'M')
 
-            # 2️⃣ Add data and make image
-            qr.add_data(data)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white")
+        error_correction = {
+            'L': qrcode.constants.ERROR_CORRECT_L,
+            'M': qrcode.constants.ERROR_CORRECT_M,
+            'Q': qrcode.constants.ERROR_CORRECT_Q,
+            'H': qrcode.constants.ERROR_CORRECT_H
+        }[error_level]
 
-            # 3️⃣ Save image file
-            qr_filename = f"qr_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
-            qr_path = os.path.join(QR_FOLDER, qr_filename)
-            img.save(qr_path)
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=error_correction,
+            box_size=box_size,
+            border=2,
+        )
+        qr.add_data(data)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color=fill_color, back_color=back_color)
 
-    return render_template("index.html", qr_filename=qr_filename)
+        # Convert image to base64 string to embed in HTML
+        buf = io.BytesIO()
+        img.save(buf, format='PNG')
+        buf.seek(0)
+        img_data = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-
+    return render_template('index.html', img_data=img_data)
